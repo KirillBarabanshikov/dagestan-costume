@@ -1,7 +1,11 @@
+import { Outlet } from 'react-router-dom';
+
 import styles from './ControllerPage.module.scss';
 
-const ControllerPage = () => {
-    return <div className={styles.controllerPage}>controller</div>;
+export const ControllerPage = () => {
+    return (
+        <div className={styles.controllerPage}>
+            <Outlet />
+        </div>
+    );
 };
-
-export default ControllerPage;

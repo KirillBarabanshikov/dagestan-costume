@@ -1,7 +1,11 @@
+import { Outlet } from 'react-router-dom';
+
 import styles from './MainPage.module.scss';
 
-const MainPage = () => {
-    return <div className={styles.mainPage}>main</div>;
+export const MainPage = () => {
+    return (
+        <div className={styles.mainPage}>
+            <Outlet />
+        </div>
+    );
 };
-
-export default MainPage;
