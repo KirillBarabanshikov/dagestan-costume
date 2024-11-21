@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import FingerIcon from '@/shared/assets/icons/finger.svg?react';
 import { Button, Modal } from '@/shared/ui';
@@ -7,6 +8,11 @@ import styles from './ControllerScreensaver.module.scss';
 
 export const ControllerScreensaver = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const navigate = useNavigate();
+
+    const handleSelect = () => {
+        navigate('/controller/choice-costume');
+    };
 
     return (
         <>
@@ -19,8 +25,12 @@ export const ControllerScreensaver = () => {
             <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
                 <div className={styles.modalBody}>
                     <h2>ВЫБОР КОСТЮМА</h2>
-                    <Button fullWidth>Мужской</Button>
-                    <Button fullWidth>Женский</Button>
+                    <Button fullWidth onClick={handleSelect}>
+                        Мужской
+                    </Button>
+                    <Button fullWidth onClick={handleSelect}>
+                        Женский
+                    </Button>
                 </div>
             </Modal>
         </>

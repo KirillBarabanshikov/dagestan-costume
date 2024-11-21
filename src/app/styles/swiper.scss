@@ -1,0 +1,35 @@
+.choice-costume-slider,
+.choice-scene-slider {
+    //animation: 3s infinite anime;
+}
+
+.choice-costume-slider {
+    .swiper-slide {
+        transform: scale(0.55);
+        transition: transform 300ms ease-out;
+    }
+
+    .swiper-slide-active {
+        transform: scale(1);
+    }
+}
+
+.choice-scene-slider {
+    .swiper-slide {
+        transform: scale(0.55);
+        transition: transform 300ms ease-out;
+    }
+
+    .swiper-slide-active {
+        transform: scale(1);
+    }
+}
+
+@keyframes anime {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
