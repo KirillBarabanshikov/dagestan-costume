@@ -1,7 +1,8 @@
+import { useNavigate } from 'react-router-dom';
+
 import { Button, PhotoPreview } from '@/shared/ui';
 
 import styles from './Photo.module.scss';
-import { useNavigate } from 'react-router-dom';
 
 export const Photo = () => {
     const navigate = useNavigate();

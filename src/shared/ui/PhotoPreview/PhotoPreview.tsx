@@ -1,6 +1,7 @@
-import { FC } from 'react';
-import styles from './PhotoPreview.module.scss';
 import clsx from 'clsx';
+import { FC } from 'react';
+
+import styles from './PhotoPreview.module.scss';
 
 interface IPhotoPreviewProps {
     src: string;

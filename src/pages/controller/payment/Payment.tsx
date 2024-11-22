@@ -1,7 +1,9 @@
-import styles from './Payment.module.scss';
-import { AlertModal, Button } from '@/shared/ui';
-import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import { AlertModal, Button } from '@/shared/ui';
+
+import styles from './Payment.module.scss';
 
 export const Payment = () => {
     const [isOpen, setIsOpen] = useState(false);

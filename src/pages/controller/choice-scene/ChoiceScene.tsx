@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Swiper as SwiperType } from 'swiper';
@@ -11,17 +12,16 @@ import styles from './ChoiceScene.module.scss';
 const data = [
     {
         id: 1,
-        title: 'Агулка',
         image: '/scene1.png',
     },
     {
         id: 2,
-        title: 'Агулка 2',
         image: '/scene2.png',
     },
 ];
 
 export const ChoiceScene = () => {
+    const [currentIndex, setCurrentIndex] = useState(0);
     const [isOpenFirst, setIsOpenFirst] = useState(false);
     const [isOpenSecond, setIsOpenSecond] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -33,7 +33,15 @@ export const ChoiceScene = () => {
     };
 
     const handleChangeScene = () => {
-        swiperRef.current?.slideNext();
+        if (data.length >= 4) {
+            return swiperRef.current?.slideNext();
+        }
+
+        if (currentIndex === data.length - 1) {
+            swiperRef.current?.slideTo(0);
+        } else {
+            swiperRef.current?.slideNext();
+        }
     };
 
     const handleCreatePhoto = () => {
@@ -69,13 +77,22 @@ export const ChoiceScene = () => {
                         slidesPerView={3}
                         spaceBetween={24}
                         centeredSlides
+                        loop={data.length >= 4}
+                        onSlideChange={(swiper) => setCurrentIndex(swiper.realIndex)}
                         onSwiper={(swiper) => (swiperRef.current = swiper)}
-                        className={'choice-scene-slider'}
                     >
-                        {data.map((costume) => {
+                        {data.map((scene, index) => {
+                            const realIndex = swiperRef.current?.realIndex || 0;
+
                             return (
-                                <SwiperSlide key={costume.id} className={styles.slide}>
-                                    <img src={costume.image} alt={costume.title} draggable={false} />
+                                <SwiperSlide key={scene.id} className={styles.slide}>
+                                    <motion.img
+                                        initial={false}
+                                        animate={{ scale: realIndex === index ? 1 : 0.55 }}
+                                        src={scene.image}
+                                        alt={'scene'}
+                                        draggable={false}
+                                    />
                                 </SwiperSlide>
                             );
                         })}

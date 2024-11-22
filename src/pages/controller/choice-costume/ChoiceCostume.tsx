@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Swiper as SwiperType } from 'swiper';
@@ -58,15 +59,22 @@ export const ChoiceCostume = () => {
                     slidesPerView={3}
                     spaceBetween={24}
                     centeredSlides
-                    loop
+                    loop={data.length >= 4}
                     onSlideChange={(swiper) => setCurrentIndex(swiper.realIndex)}
                     onSwiper={(swiper) => (swiperRef.current = swiper)}
-                    className={'choice-costume-slider'}
                 >
-                    {data.map((costume) => {
+                    {data.map((costume, index) => {
+                        const realIndex = swiperRef.current?.realIndex || 0;
+
                         return (
                             <SwiperSlide key={costume.id} className={styles.slide}>
-                                <img src={costume.image} alt={costume.title} draggable={false} />
+                                <motion.img
+                                    initial={false}
+                                    animate={{ scale: realIndex === index ? 1 : 0.55 }}
+                                    src={costume.image}
+                                    alt={costume.title}
+                                    draggable={false}
+                                />
                             </SwiperSlide>
                         );
                     })}

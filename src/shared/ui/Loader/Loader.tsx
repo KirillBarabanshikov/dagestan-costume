@@ -1,9 +1,11 @@
-import { FC } from 'react';
-import { Modal } from '@/shared/ui';
-import LoaderIcon from '@/shared/assets/icons/loader.svg?react';
-import styles from './Loader.module.scss';
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
+import { FC } from 'react';
+
+import LoaderIcon from '@/shared/assets/icons/loader.svg?react';
+import { Modal } from '@/shared/ui';
+
+import styles from './Loader.module.scss';
 
 interface ILoaderProps {
     isLoading: boolean;

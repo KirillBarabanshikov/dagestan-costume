@@ -1,7 +1,9 @@
 import { FC } from 'react';
-import { Button, Modal } from '@/shared/ui';
-import SuccessIcon from '@/shared/assets/icons/success.svg?react';
+
 import ErrorIcon from '@/shared/assets/icons/error.svg?react';
+import SuccessIcon from '@/shared/assets/icons/success.svg?react';
+import { Button, Modal } from '@/shared/ui';
+
 import styles from './AlertModal.module.scss';
 
 interface IAlertModalProps {

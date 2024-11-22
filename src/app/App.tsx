@@ -1,5 +1,4 @@
 import './styles/index.css';
-import './styles/swiper.scss';
 // @ts-ignore
 import 'swiper/css';
 
