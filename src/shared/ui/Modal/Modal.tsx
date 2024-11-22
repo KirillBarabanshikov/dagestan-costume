@@ -7,7 +7,7 @@ import styles from './Modal.module.scss';
 
 interface IModalProps extends PropsWithChildren {
     isOpen: boolean;
-    onClose: () => void;
+    onClose?: () => void;
     maxWidth?: string;
 }
 

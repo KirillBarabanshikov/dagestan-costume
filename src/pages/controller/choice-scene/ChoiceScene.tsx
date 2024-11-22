@@ -4,7 +4,7 @@ import { Swiper as SwiperType } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 import InstructionsIcon from '@/shared/assets/icons/instructions.svg?react';
-import { Button, Modal } from '@/shared/ui';
+import { Button, Loader, Modal } from '@/shared/ui';
 
 import styles from './ChoiceScene.module.scss';
 
@@ -24,6 +24,7 @@ const data = [
 export const ChoiceScene = () => {
     const [isOpenFirst, setIsOpenFirst] = useState(false);
     const [isOpenSecond, setIsOpenSecond] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const swiperRef = useRef<SwiperType | null>(null);
     const navigate = useNavigate();
 
@@ -33,6 +34,20 @@ export const ChoiceScene = () => {
 
     const handleChangeScene = () => {
         swiperRef.current?.slideNext();
+    };
+
+    const handleCreatePhoto = () => {
+        setIsOpenFirst(false);
+        setIsOpenSecond(true);
+
+        setTimeout(() => {
+            setIsOpenSecond(false);
+            setIsLoading(true);
+
+            setTimeout(() => {
+                navigate('/controller/photo');
+            }, 3000);
+        }, 3000);
     };
 
     return (
@@ -93,19 +108,13 @@ export const ChoiceScene = () => {
                         <Button theme={'lightgreen'} fullWidth onClick={() => setIsOpenFirst(false)}>
                             Назад
                         </Button>
-                        <Button
-                            fullWidth
-                            onClick={() => {
-                                setIsOpenFirst(false);
-                                setIsOpenSecond(true);
-                            }}
-                        >
+                        <Button fullWidth onClick={handleCreatePhoto}>
                             сделать фото
                         </Button>
                     </div>
                 </div>
             </Modal>
-            <Modal isOpen={isOpenSecond} onClose={() => setIsOpenFirst(false)} maxWidth={'1022px'}>
+            <Modal isOpen={isOpenSecond} onClose={() => setIsOpenSecond(false)} maxWidth={'1022px'}>
                 <div className={styles.modalBody}>
                     <h2>Инструкция</h2>
                     <div className={styles.descriptionWrap}>
@@ -121,6 +130,12 @@ export const ChoiceScene = () => {
                     </div>
                 </div>
             </Modal>
+            <Loader
+                isLoading={isLoading}
+                title={'Пожалуйста,подождите...'}
+                subtitle={'Ваша фотография обрабатывается'}
+                variant={'controller'}
+            />
         </>
     );
 };

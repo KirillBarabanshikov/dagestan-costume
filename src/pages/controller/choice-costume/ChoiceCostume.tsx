@@ -43,7 +43,12 @@ export const ChoiceCostume = () => {
         <div className={styles.choiceCostume}>
             <div className={styles.titleWrap}>
                 <h2>{data[currentIndex].title}</h2>
-                <Button theme={'lightgreen'} onClick={() => navigate('/controller')} className={styles.button}>
+                <Button
+                    theme={'lightgreen'}
+                    size={'sm'}
+                    onClick={() => navigate('/controller')}
+                    className={styles.button}
+                >
                     назад
                 </Button>
             </div>
