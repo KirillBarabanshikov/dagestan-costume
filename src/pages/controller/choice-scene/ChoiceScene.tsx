@@ -22,12 +22,13 @@ const data = [
 ];
 
 export const ChoiceScene = () => {
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpenFirst, setIsOpenFirst] = useState(false);
+    const [isOpenSecond, setIsOpenSecond] = useState(false);
     const swiperRef = useRef<SwiperType | null>(null);
     const navigate = useNavigate();
 
     const handleSelect = () => {
-        setIsOpen(true);
+        setIsOpenFirst(true);
     };
 
     const handleChangeScene = () => {
@@ -72,7 +73,7 @@ export const ChoiceScene = () => {
                     <Button onClick={handleSelect}>выбрать</Button>
                 </div>
             </div>
-            <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} maxWidth={'1788px'}>
+            <Modal isOpen={isOpenFirst} onClose={() => setIsOpenFirst(false)} maxWidth={'1788px'}>
                 <div className={styles.modalBody}>
                     <h2>Инструкция</h2>
                     <div className={styles.descriptionWrap}>
@@ -89,10 +90,34 @@ export const ChoiceScene = () => {
                         <InstructionsIcon />
                     </div>
                     <div className={styles.buttons}>
-                        <Button theme={'lightgreen'} fullWidth onClick={() => setIsOpen(false)}>
+                        <Button theme={'lightgreen'} fullWidth onClick={() => setIsOpenFirst(false)}>
                             Назад
                         </Button>
-                        <Button fullWidth>сделать фото</Button>
+                        <Button
+                            fullWidth
+                            onClick={() => {
+                                setIsOpenFirst(false);
+                                setIsOpenSecond(true);
+                            }}
+                        >
+                            сделать фото
+                        </Button>
+                    </div>
+                </div>
+            </Modal>
+            <Modal isOpen={isOpenSecond} onClose={() => setIsOpenFirst(false)} maxWidth={'1022px'}>
+                <div className={styles.modalBody}>
+                    <h2>Инструкция</h2>
+                    <div className={styles.descriptionWrap}>
+                        <p>
+                            Встаньте в размеченную область на полу так, чтобы вы полностью помещались в силует на экране
+                        </p>
+                        <InstructionsIcon />
+                    </div>
+                    <div className={styles.buttons}>
+                        <Button theme={'lightgreen'} fullWidth onClick={() => setIsOpenSecond(false)}>
+                            Назад
+                        </Button>
                     </div>
                 </div>
             </Modal>

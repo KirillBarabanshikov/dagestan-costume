@@ -1,35 +1,21 @@
-.choice-costume-slider,
-.choice-scene-slider {
-    //animation: 3s infinite anime;
-}
-
 .choice-costume-slider {
     .swiper-slide {
-        transform: scale(0.55);
+        transform: scale(0.55) !important;
         transition: transform 300ms ease-out;
     }
 
     .swiper-slide-active {
-        transform: scale(1);
+        transform: scale(1) !important;
     }
 }
 
 .choice-scene-slider {
     .swiper-slide {
-        transform: scale(0.55);
+        transform: scale(0.55) !important;
         transition: transform 300ms ease-out;
     }
 
     .swiper-slide-active {
-        transform: scale(1);
-    }
-}
-
-@keyframes anime {
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
+        transform: scale(1) !important;
     }
 }

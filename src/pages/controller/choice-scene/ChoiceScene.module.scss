@@ -80,6 +80,13 @@
             color: var(--color-sub-black);
         }
 
+        p {
+            font-size: 32px;
+            line-height: 1.2;
+            color: var(--color-sub-black);
+            max-width: 450px;
+        }
+
         svg {
             min-width: 216px;
             min-height: 216px;

@@ -1,6 +1,7 @@
 import './styles/index.css';
 import './styles/swiper.scss';
-import '/swiper/css';
+// @ts-ignore
+import 'swiper/css';
 
 import { RouterProvider } from 'react-router-dom';
 
