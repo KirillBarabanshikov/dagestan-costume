@@ -4,8 +4,8 @@ import { ButtonHTMLAttributes, FC } from 'react';
 import styles from './Button.module.scss';
 
 interface IButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-    theme?: 'green' | 'lightgreen' | 'white';
-    size?: 'default' | 'sm';
+    theme?: 'green' | 'lightgreen' | 'white' | 'blur';
+    size?: 'default' | 'sm' | 'lg';
     fullWidth?: boolean;
 }
 
