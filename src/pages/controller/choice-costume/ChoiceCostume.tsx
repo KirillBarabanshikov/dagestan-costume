@@ -11,6 +11,7 @@ import { useControllerStore } from '@/shared/store';
 import { Button } from '@/shared/ui';
 
 import styles from './ChoiceCostume.module.scss';
+import { sendChoiceCostume } from '@/entities/statistic';
 
 export const ChoiceCostume = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -34,8 +35,10 @@ export const ChoiceCostume = () => {
 
     const handleSelect = () => {
         if (!costumes) return;
-
-        setCostume(costumes[currentIndex]);
+        const selectedCostume = costumes[currentIndex];
+        if (!selectedCostume) return;
+        setCostume(selectedCostume);
+        sendChoiceCostume(selectedCostume.id);
         navigate('/controller/choice-scene');
     };
 

@@ -5,18 +5,27 @@ import { ICostume } from '@/entities/costume';
 
 import { TGender } from '../types';
 
-interface ControllerState {
+type State = {
     gender?: TGender;
-    setGender: (gender: TGender) => void;
     costume?: ICostume;
-    setCostume: (costume: ICostume) => void;
-}
+};
 
-export const useControllerStore = create<ControllerState>()(
+type Actions = {
+    setGender: (gender: TGender) => void;
+    setCostume: (costume: ICostume) => void;
+    reset: () => void;
+};
+
+const initialState: State = {
+    gender: undefined,
+    costume: undefined,
+};
+
+export const useControllerStore = create<State & Actions>()(
     devtools((set) => ({
-        gender: undefined,
+        ...initialState,
         setGender: (gender) => set({ gender }),
-        costume: undefined,
         setCostume: (costume) => set({ costume }),
+        reset: () => set(initialState),
     })),
 );

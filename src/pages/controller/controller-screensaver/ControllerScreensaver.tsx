@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import FingerIcon from '@/shared/assets/icons/finger.svg?react';
@@ -11,7 +11,11 @@ import styles from './ControllerScreensaver.module.scss';
 export const ControllerScreensaver = () => {
     const [isOpen, setIsOpen] = useState(false);
     const navigate = useNavigate();
-    const setGender = useControllerStore((state) => state.setGender);
+    const { setGender, reset } = useControllerStore((state) => state);
+
+    useEffect(() => {
+        reset();
+    }, []);
 
     const handleSelect = (gender: TGender) => {
         setGender(gender);
