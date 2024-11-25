@@ -6,7 +6,9 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 
 import InstructionsIcon from '@/shared/assets/icons/instructions.svg?react';
 import { API_URL } from '@/shared/const';
+import { useSSE } from '@/shared/hooks';
 import { useControllerStore } from '@/shared/store';
+import { TSSEActions } from '@/shared/types';
 import { Button, Loader, Modal } from '@/shared/ui';
 
 import styles from './ChoiceScene.module.scss';
@@ -19,18 +21,26 @@ export const ChoiceScene = () => {
     const swiperRef = useRef<SwiperType | null>(null);
     const navigate = useNavigate();
     const costume = useControllerStore((state) => state.costume);
-    const secenes = costume?.scenes || [];
+    const scenes = costume?.scenes || [];
+
+    useSSE<{ action: TSSEActions; payload: string }>({
+        onMessage: (data) => {
+            if (data.action === 'photoLoading') {
+                setIsLoading(true);
+            }
+        },
+    });
 
     const handleSelect = () => {
         setIsOpenFirst(true);
     };
 
     const handleChangeScene = () => {
-        if (secenes.length >= 4) {
+        if (scenes.length >= 4) {
             return swiperRef.current?.slideNext();
         }
 
-        if (currentIndex === secenes.length - 1) {
+        if (currentIndex === scenes.length - 1) {
             swiperRef.current?.slideTo(0);
         } else {
             swiperRef.current?.slideNext();
@@ -70,11 +80,11 @@ export const ChoiceScene = () => {
                         slidesPerView={3}
                         spaceBetween={24}
                         centeredSlides
-                        loop={secenes.length >= 4}
+                        loop={scenes.length >= 4}
                         onSlideChange={(swiper) => setCurrentIndex(swiper.realIndex)}
                         onSwiper={(swiper) => (swiperRef.current = swiper)}
                     >
-                        {secenes.map((scene, index) => {
+                        {scenes.map((scene, index) => {
                             const realIndex = swiperRef.current?.realIndex || 0;
 
                             return (

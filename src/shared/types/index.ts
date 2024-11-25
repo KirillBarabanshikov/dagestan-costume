@@ -1,1 +1,1 @@
-export type { TGender } from './types.ts';
+export type { TGender, TSSEActions } from './types.ts';
