@@ -1,4 +1,5 @@
 import { Button, PhotoPreview } from '@/shared/ui';
+
 import styles from './Result.module.scss';
 
 export const Result = () => {

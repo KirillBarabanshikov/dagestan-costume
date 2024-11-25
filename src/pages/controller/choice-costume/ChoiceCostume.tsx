@@ -1,49 +1,50 @@
+import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Swiper as SwiperType } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
+import { fetchCostumes } from '@/entities/costume';
+import { API_URL } from '@/shared/const';
+import { useControllerStore } from '@/shared/store';
 import { Button } from '@/shared/ui';
 
 import styles from './ChoiceCostume.module.scss';
-
-const data = [
-    {
-        id: 1,
-        title: 'Агулка',
-        image: '/1.png',
-    },
-    {
-        id: 2,
-        title: 'Агулка 2',
-        image: '/2.png',
-    },
-    {
-        id: 3,
-        title: 'Агулка 3',
-        image: '/3.png',
-    },
-    {
-        id: 4,
-        title: 'Агулка 4',
-        image: '/2.png',
-    },
-];
 
 export const ChoiceCostume = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const swiperRef = useRef<SwiperType | null>(null);
     const navigate = useNavigate();
+    const { gender, costume, setCostume } = useControllerStore((state) => state);
+
+    const { data: costumes } = useQuery({
+        queryKey: ['costumes', gender],
+        queryFn: () => fetchCostumes(gender!),
+        enabled: !!gender,
+    });
+
+    useEffect(() => {
+        if (!costume || !costumes) return;
+        let index = costumes.findIndex((element) => element.id === costume.id);
+        if (index < 0) index = 0;
+        setCurrentIndex(index);
+        swiperRef.current?.slideTo(index);
+    }, [costume, costumes]);
 
     const handleSelect = () => {
+        if (!costumes) return;
+
+        setCostume(costumes[currentIndex]);
         navigate('/controller/choice-scene');
     };
+
+    if (!costumes || !costumes.length) return <></>;
 
     return (
         <div className={styles.choiceCostume}>
             <div className={styles.titleWrap}>
-                <h2>{data[currentIndex].title}</h2>
+                <h2>{costumes[currentIndex].title}</h2>
                 <Button
                     theme={'lightgreen'}
                     size={'sm'}
@@ -59,11 +60,11 @@ export const ChoiceCostume = () => {
                     slidesPerView={3}
                     spaceBetween={24}
                     centeredSlides
-                    loop={data.length >= 4}
+                    loop={costumes.length >= 4}
                     onSlideChange={(swiper) => setCurrentIndex(swiper.realIndex)}
                     onSwiper={(swiper) => (swiperRef.current = swiper)}
                 >
-                    {data.map((costume, index) => {
+                    {costumes.map((costume, index) => {
                         const realIndex = swiperRef.current?.realIndex || 0;
 
                         return (
@@ -71,7 +72,8 @@ export const ChoiceCostume = () => {
                                 <motion.img
                                     initial={false}
                                     animate={{ scale: realIndex === index ? 1 : 0.55 }}
-                                    src={costume.image}
+                                    transition={{ damping: 0 }}
+                                    src={API_URL + costume.image}
                                     alt={costume.title}
                                     draggable={false}
                                 />

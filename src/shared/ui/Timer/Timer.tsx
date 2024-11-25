@@ -1,5 +1,6 @@
-import { FC, useEffect, useState } from 'react';
 import clsx from 'clsx';
+import { FC, useEffect, useState } from 'react';
+
 import styles from './Timer.module.scss';
 
 interface ITimerProps {

@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
+
 import Person from '@/shared/assets/icons/person.svg?react';
-import styles from './Camera.module.scss';
 import { Loader, Timer } from '@/shared/ui';
+
+import styles from './Camera.module.scss';
 
 export const Camera = () => {
     const [isLoading, setIsLoading] = useState(false);
@@ -91,6 +93,7 @@ export const Camera = () => {
     const handleTimerEnd = () => {
         setShowTimer(false);
         setIsLoading(true);
+        videoRef.current?.pause();
         toPhoto();
     };
 

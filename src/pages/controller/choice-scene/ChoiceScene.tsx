@@ -5,20 +5,11 @@ import { Swiper as SwiperType } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 import InstructionsIcon from '@/shared/assets/icons/instructions.svg?react';
+import { API_URL } from '@/shared/const';
+import { useControllerStore } from '@/shared/store';
 import { Button, Loader, Modal } from '@/shared/ui';
 
 import styles from './ChoiceScene.module.scss';
-
-const data = [
-    {
-        id: 1,
-        image: '/scene1.png',
-    },
-    {
-        id: 2,
-        image: '/scene2.png',
-    },
-];
 
 export const ChoiceScene = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -27,17 +18,19 @@ export const ChoiceScene = () => {
     const [isLoading, setIsLoading] = useState(false);
     const swiperRef = useRef<SwiperType | null>(null);
     const navigate = useNavigate();
+    const costume = useControllerStore((state) => state.costume);
+    const secenes = costume?.scenes || [];
 
     const handleSelect = () => {
         setIsOpenFirst(true);
     };
 
     const handleChangeScene = () => {
-        if (data.length >= 4) {
+        if (secenes.length >= 4) {
             return swiperRef.current?.slideNext();
         }
 
-        if (currentIndex === data.length - 1) {
+        if (currentIndex === secenes.length - 1) {
             swiperRef.current?.slideTo(0);
         } else {
             swiperRef.current?.slideNext();
@@ -77,11 +70,11 @@ export const ChoiceScene = () => {
                         slidesPerView={3}
                         spaceBetween={24}
                         centeredSlides
-                        loop={data.length >= 4}
+                        loop={secenes.length >= 4}
                         onSlideChange={(swiper) => setCurrentIndex(swiper.realIndex)}
                         onSwiper={(swiper) => (swiperRef.current = swiper)}
                     >
-                        {data.map((scene, index) => {
+                        {secenes.map((scene, index) => {
                             const realIndex = swiperRef.current?.realIndex || 0;
 
                             return (
@@ -89,7 +82,8 @@ export const ChoiceScene = () => {
                                     <motion.img
                                         initial={false}
                                         animate={{ scale: realIndex === index ? 1 : 0.55 }}
-                                        src={scene.image}
+                                        transition={{ damping: 0 }}
+                                        src={API_URL + scene.image}
                                         alt={'scene'}
                                         draggable={false}
                                     />
