@@ -27,14 +27,14 @@ export const Camera = () => {
         const drawToCanvas = () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            ctx.save();
-            ctx.drawImage(video, 0, 0, videoWidth, videoHeight, 0, 0, canvas.width, canvas.height);
-            ctx.restore();
+            const scale = Math.max(canvas.width / video.videoWidth, canvas.height / video.videoHeight);
+            const x = (canvas.width - video.videoWidth * scale) / 2;
+            const y = (canvas.height - video.videoHeight * scale) / 2;
 
             ctx.save();
-            ctx.translate(canvas.width, 0);
+            ctx.translate(canvas.width, 0); // Зеркальное отображение
             ctx.scale(-1, 1);
-            ctx.drawImage(canvas, 0, 0, canvas.width, canvas.height);
+            ctx.drawImage(video, x, y, video.videoWidth * scale, video.videoHeight * scale);
             ctx.restore();
 
             animationFrameId = requestAnimationFrame(drawToCanvas);
@@ -83,7 +83,7 @@ export const Camera = () => {
         canvas.toBlob((blob) => {
             if (blob) {
                 const file = new File([blob], 'photo.png', { type: 'image/png' });
-                console.log('Created File:', file);
+                console.log(file);
             } else {
                 console.error('Failed to create blob from canvas.');
             }
