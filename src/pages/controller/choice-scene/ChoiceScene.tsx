@@ -1,64 +1,85 @@
-import { motion } from 'framer-motion';
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Swiper as SwiperType } from 'swiper';
-import { Swiper, SwiperSlide } from 'swiper/react';
 
 import { sendChoiceScene, sendEvent } from '@/shared/api';
 import InstructionsIcon from '@/shared/assets/icons/instructions.svg?react';
-import { API_URL } from '@/shared/const';
 import { useSSE } from '@/shared/hooks';
 import { useControllerStore } from '@/shared/store';
 import { TSSEActions } from '@/shared/types';
 import { Button, Loader, Modal } from '@/shared/ui';
 
 import styles from './ChoiceScene.module.scss';
+import { SceneSlider } from './SceneSlider.tsx';
 
 export const ChoiceScene = () => {
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [isOpenFirst, setIsOpenFirst] = useState(false);
-    const [isOpenSecond, setIsOpenSecond] = useState(false);
+    const [modalState, setModalState] = useState<'none' | 'first' | 'second'>('none');
     const [isLoading, setIsLoading] = useState(false);
     const swiperRef = useRef<SwiperType | null>(null);
     const navigate = useNavigate();
-    const { costume, statisticId } = useControllerStore((state) => state);
-    const scenes = costume?.scenes || [];
+    const { costume, scene, setScene, statisticId } = useControllerStore((state) => state);
 
     useSSE<{ action: TSSEActions }>({
         onMessage: (data) => {
             if (data.action === 'photoLoading') {
-                setIsOpenSecond(false);
+                setModalState('none');
                 setIsLoading(true);
+            }
+            if (data.action === 'photoCreated') {
+                setIsLoading(false);
             }
         },
     });
 
-    const handleSelect = () => {
-        setIsOpenFirst(true);
+    const currentScene = useMemo(() => {
+        return costume?.scenes.find((s) => s.id === scene?.id) || costume!.scenes[0];
+    }, [costume, scene]);
+
+    const currentSlide = useMemo(() => {
+        const index = costume?.scenes.findIndex((s) => s.id === scene?.id) || 0;
+        return index >= 0 ? index : 0;
+    }, [costume, scene]);
+
+    const handleChangeSlide = (swiper: SwiperType) => {
+        const newScene = costume?.scenes[swiper.realIndex];
+        if (newScene) {
+            setScene(newScene);
+        }
     };
 
     const handleChangeScene = () => {
-        if (scenes.length >= 4) {
-            return swiperRef.current?.slideNext();
-        }
+        if (!costume) return;
 
-        if (currentIndex === scenes.length - 1) {
-            swiperRef.current?.slideTo(0);
-        } else {
+        if (costume.scenes.length >= 4) {
             swiperRef.current?.slideNext();
+        } else {
+            const nextIndex = currentSlide === costume.scenes.length - 1 ? 0 : currentSlide + 1;
+            swiperRef.current?.slideTo(nextIndex);
         }
     };
 
     const handleCreatePhoto = async () => {
         try {
-            statisticId && (await sendChoiceScene(statisticId, scenes[currentIndex].id));
+            setModalState('second');
+            if (statisticId) {
+                await sendChoiceScene(statisticId, currentScene.id);
+            }
             await sendEvent({ action: 'selectScene', payload: costume });
-            setIsOpenFirst(false);
-            setIsOpenSecond(true);
         } catch (error) {
             console.error(error);
         }
     };
+
+    const handleBackEvent = async () => {
+        try {
+            await sendEvent({ action: 'back', payload: costume });
+            setModalState('first');
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    if (!costume) return <></>;
 
     return (
         <>
@@ -67,7 +88,10 @@ export const ChoiceScene = () => {
                     <h2>Выбор сцены</h2>
                     <Button
                         theme={'lightgreen'}
-                        onClick={() => navigate('/controller/choice-costume')}
+                        onClick={() => {
+                            navigate('/controller/choice-costume');
+                            setScene(undefined);
+                        }}
                         className={styles.button}
                     >
                         назад
@@ -75,40 +99,21 @@ export const ChoiceScene = () => {
                 </div>
 
                 <div className={styles.sliderWrap}>
-                    <Swiper
-                        slidesPerView={3}
-                        spaceBetween={24}
-                        centeredSlides
-                        loop={scenes.length >= 4}
-                        onSlideChange={(swiper) => setCurrentIndex(swiper.realIndex)}
-                        onSwiper={(swiper) => (swiperRef.current = swiper)}
-                    >
-                        {scenes.map((scene, index) => {
-                            const realIndex = swiperRef.current?.realIndex || 0;
-
-                            return (
-                                <SwiperSlide key={scene.id} className={styles.slide}>
-                                    <motion.img
-                                        initial={false}
-                                        animate={{ scale: realIndex === index ? 1 : 0.55 }}
-                                        transition={{ damping: 0 }}
-                                        src={API_URL + scene.image}
-                                        alt={'scene'}
-                                        draggable={false}
-                                    />
-                                </SwiperSlide>
-                            );
-                        })}
-                    </Swiper>
+                    <SceneSlider
+                        scenes={costume.scenes}
+                        onSlideChange={handleChangeSlide}
+                        swiperRef={swiperRef}
+                        currentSlide={currentSlide}
+                    />
                 </div>
                 <div className={styles.buttonsWrap}>
                     <Button theme={'white'} onClick={handleChangeScene} className={styles.prev}>
                         Другая позиция
                     </Button>
-                    <Button onClick={handleSelect}>выбрать</Button>
+                    <Button onClick={() => setModalState('first')}>выбрать</Button>
                 </div>
             </div>
-            <Modal isOpen={isOpenFirst} onClose={() => setIsOpenFirst(false)} maxWidth={'1788px'}>
+            <Modal isOpen={modalState === 'first'} onClose={() => setModalState('none')} maxWidth={'1788px'}>
                 <div className={styles.modalBody}>
                     <h2>Инструкция</h2>
                     <div className={styles.descriptionWrap}>
@@ -125,7 +130,7 @@ export const ChoiceScene = () => {
                         <InstructionsIcon />
                     </div>
                     <div className={styles.buttons}>
-                        <Button theme={'lightgreen'} fullWidth onClick={() => setIsOpenFirst(false)}>
+                        <Button theme={'lightgreen'} fullWidth onClick={() => setModalState('none')}>
                             Назад
                         </Button>
                         <Button fullWidth onClick={handleCreatePhoto}>
@@ -134,7 +139,7 @@ export const ChoiceScene = () => {
                     </div>
                 </div>
             </Modal>
-            <Modal isOpen={isOpenSecond} onClose={() => setIsOpenSecond(false)} maxWidth={'1022px'}>
+            <Modal isOpen={modalState === 'second'} onClose={() => setModalState('none')} maxWidth={'1022px'}>
                 <div className={styles.modalBody}>
                     <h2>Инструкция</h2>
                     <div className={styles.descriptionWrap}>
@@ -144,14 +149,7 @@ export const ChoiceScene = () => {
                         <InstructionsIcon />
                     </div>
                     <div className={styles.buttons}>
-                        <Button
-                            theme={'lightgreen'}
-                            fullWidth
-                            onClick={() => {
-                                setIsOpenSecond(false);
-                                sendEvent({ action: 'back', payload: costume });
-                            }}
-                        >
+                        <Button theme={'lightgreen'} fullWidth onClick={handleBackEvent}>
                             Назад
                         </Button>
                     </div>

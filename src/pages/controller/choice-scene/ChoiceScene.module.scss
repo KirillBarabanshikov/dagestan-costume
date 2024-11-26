@@ -33,6 +33,7 @@
                 width: 554px;
                 height: 988px;
                 border-radius: 24px;
+                will-change: transform;
             }
         }
     }
@@ -45,7 +46,6 @@
         z-index: 1;
 
         display: flex;
-        align-content: center;
         background-color: #f1ffcf80;
         border-radius: 24px;
         padding: 6px;
@@ -55,8 +55,7 @@
             flex: 1;
         }
 
-        .prev,
-        .next {
+        .prev {
             font-size: 20px;
         }
     }

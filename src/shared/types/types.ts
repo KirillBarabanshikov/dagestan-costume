@@ -1,6 +1,6 @@
 export type TGender = 'male' | 'female';
 
-export type TSSEActions = 'selectCostume' | 'selectScene' | 'photoLoading' | 'retry' | 'exit' | 'back';
+export type TSSEActions = 'selectCostume' | 'selectScene' | 'photoLoading' | 'photoCreated' | 'retry' | 'exit' | 'back';
 
 export interface ICostume {
     id: number;
