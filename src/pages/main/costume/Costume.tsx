@@ -17,7 +17,7 @@ export const Costume = () => {
     useSSE<{ action: TSSEActions; payload: ICostume }>({
         onMessage: (data) => {
             if (data.action === 'back') {
-                navigate(-1);
+                navigate('/');
             }
             if (data.action === 'selectCostume') {
                 setSelectedCostume(data.payload);
