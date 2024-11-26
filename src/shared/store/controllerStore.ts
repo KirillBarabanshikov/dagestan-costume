@@ -23,11 +23,14 @@ const initialState: State = {
 };
 
 export const useControllerStore = create<State & Actions>()(
-    devtools((set) => ({
-        ...initialState,
-        setGender: (gender) => set({ gender }),
-        setCostume: (costume) => set({ costume }),
-        setStatisticId: (statisticId) => set({ statisticId }),
-        reset: () => set(initialState),
-    })),
+    devtools(
+        (set) => ({
+            ...initialState,
+            setGender: (gender) => set({ gender }),
+            setCostume: (costume) => set({ costume }),
+            setStatisticId: (statisticId) => set({ statisticId }),
+            reset: () => set(initialState),
+        }),
+        { name: 'ControllerStore' },
+    ),
 );

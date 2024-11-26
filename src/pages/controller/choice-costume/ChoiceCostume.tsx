@@ -1,135 +1,107 @@
 import { useQuery } from '@tanstack/react-query';
-import { motion } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Swiper as SwiperType } from 'swiper';
-import { Swiper, SwiperSlide } from 'swiper/react';
 
+import { CostumeSlider } from '@/pages/controller/choice-costume/CostumeSlider.tsx';
 import { fetchCostumes, sendChoiceCostume, sendEvent } from '@/shared/api';
-import { API_URL } from '@/shared/const';
 import { useControllerStore } from '@/shared/store';
 import { Button } from '@/shared/ui';
 
 import styles from './ChoiceCostume.module.scss';
 
 export const ChoiceCostume = () => {
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [isLoading, setIsLoading] = useState(false);
     const swiperRef = useRef<SwiperType | null>(null);
     const navigate = useNavigate();
     const { gender, costume, setCostume, setStatisticId } = useControllerStore((state) => state);
 
-    const { data: costumes } = useQuery({
+    const { data: costumes = [] } = useQuery({
         queryKey: ['costumes', gender],
         queryFn: () => fetchCostumes(gender!),
         enabled: !!gender,
     });
 
-    useEffect(() => {
-        if (costume) {
-            sendEvent({ action: 'selectCostume', payload: costume });
-        } else if (costumes && costumes.length) {
-            sendEvent({ action: 'selectCostume', payload: costumes[0] });
-        }
+    const currentCostume = useMemo(
+        () => costumes.find((c) => c.id === costume?.id) || costumes[0],
+        [costume, costumes],
+    );
+
+    const currentSlide = useMemo(() => {
+        const index = costumes.findIndex((c) => c.id === costume?.id);
+        return index >= 0 ? index : 0;
     }, [costume, costumes]);
 
     useEffect(() => {
-        if (!costume || !costumes) return;
-        let index = costumes.findIndex((element) => element.id === costume.id);
-        if (index < 0) index = 0;
-        setCurrentIndex(index);
-        swiperRef.current?.slideTo(index);
-    }, [costume, costumes]);
+        const handleEvent = async () => {
+            if (currentCostume) {
+                try {
+                    await sendEvent({ action: 'selectCostume', payload: currentCostume });
+                } catch (error) {
+                    console.error('Error sending event:', error);
+                }
+            }
+        };
+
+        handleEvent();
+    }, [currentCostume]);
 
     const handleSelect = async () => {
+        if (!currentCostume) return;
+
         try {
-            if (!costumes) return;
-            const selectedCostume = costumes[currentIndex];
-            if (!selectedCostume) return;
-            setCostume(selectedCostume);
-            setIsLoading(true);
-            const statisticId = await sendChoiceCostume(selectedCostume.id);
+            const statisticId = await sendChoiceCostume(currentCostume.id);
             setStatisticId(statisticId);
-            await sendEvent({ action: 'selectCostume', payload: selectedCostume });
+            await sendEvent({ action: 'selectCostume', payload: currentCostume });
             navigate('/controller/choice-scene');
         } catch (error) {
             console.error(error);
-        } finally {
-            setIsLoading(false);
         }
     };
 
-    if (!costumes || !costumes.length) {
-        return (
-            <div className={styles.choiceCostume}>
-                <div className={styles.titleWrap}>
-                    <div></div>
-                    <Button
-                        theme={'lightgreen'}
-                        size={'sm'}
-                        onClick={() => navigate('/controller')}
-                        className={styles.button}
-                    >
-                        назад
-                    </Button>
-                </div>
-            </div>
-        );
-    }
+    const handleSlideChange = async (swiper: SwiperType) => {
+        const newCostume = costumes[swiper.realIndex];
+        if (newCostume) {
+            setCostume(newCostume);
+            try {
+                await sendEvent({ action: 'selectCostume', payload: newCostume });
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    };
+
+    const handleBack = async () => {
+        try {
+            await sendEvent({ action: 'back' });
+            navigate('/controller');
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    if (!costumes.length) return <></>;
 
     return (
         <div className={styles.choiceCostume}>
             <div className={styles.titleWrap}>
-                <h2>{costumes[currentIndex].title}</h2>
-                <Button
-                    theme={'lightgreen'}
-                    size={'sm'}
-                    onClick={() => {
-                        sendEvent({ action: 'back' }).then(() => navigate('/controller'));
-                    }}
-                    className={styles.button}
-                >
+                <h2>{currentCostume.title}</h2>
+                <Button theme={'lightgreen'} size={'sm'} onClick={handleBack} className={styles.button}>
                     назад
                 </Button>
             </div>
-
             <div className={styles.sliderWrap}>
-                <Swiper
-                    slidesPerView={3}
-                    spaceBetween={24}
-                    centeredSlides
-                    loop={costumes.length >= 4}
-                    onSlideChange={(swiper) => {
-                        setCurrentIndex(swiper.realIndex);
-                        costumes && sendEvent({ action: 'selectCostume', payload: costumes[swiper.realIndex] });
-                    }}
-                    onSwiper={(swiper) => (swiperRef.current = swiper)}
-                >
-                    {costumes.map((costume, index) => {
-                        const realIndex = swiperRef.current?.realIndex || 0;
-
-                        return (
-                            <SwiperSlide key={costume.id} className={styles.slide}>
-                                <motion.img
-                                    initial={false}
-                                    animate={{ scale: realIndex === index ? 1 : 0.55 }}
-                                    transition={{ damping: 0 }}
-                                    src={API_URL + costume.image}
-                                    alt={costume.title}
-                                    draggable={false}
-                                />
-                            </SwiperSlide>
-                        );
-                    })}
-                </Swiper>
+                <CostumeSlider
+                    costumes={costumes}
+                    onSlideChange={handleSlideChange}
+                    swiperRef={swiperRef}
+                    currentSlide={currentSlide}
+                />
             </div>
             <div className={styles.buttonsWrap}>
                 <Button theme={'white'} onClick={() => swiperRef.current?.slidePrev()} className={styles.prev}>
                     предыдущий
                 </Button>
-                <Button onClick={handleSelect} disabled={isLoading}>
-                    выбрать
-                </Button>
+                <Button onClick={handleSelect}>выбрать</Button>
                 <Button theme={'white'} onClick={() => swiperRef.current?.slideNext()} className={styles.next}>
                     следующий
                 </Button>

@@ -16,7 +16,7 @@ export const ControllerScreensaver = () => {
 
     useEffect(() => {
         reset();
-    }, []);
+    }, [reset]);
 
     const handleSelect = (gender: TGender) => {
         setGender(gender);
@@ -32,7 +32,7 @@ export const ControllerScreensaver = () => {
                         transition={{
                             repeatType: 'loop',
                             repeat: Infinity,
-                            duration: 3,
+                            duration: 2.5,
                             ease: 'easeInOut',
                         }}
                     >
