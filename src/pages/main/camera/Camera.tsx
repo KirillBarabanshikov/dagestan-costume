@@ -1,6 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
+import { ICostume } from '@/entities/costume';
 import Person from '@/shared/assets/icons/person.svg?react';
+import { API_URL } from '@/shared/const';
+import { useSSE } from '@/shared/hooks';
+import { TSSEActions } from '@/shared/types';
 import { Loader, Timer } from '@/shared/ui';
 
 import styles from './Camera.module.scss';
@@ -10,6 +15,15 @@ export const Camera = () => {
     const [showTimer, setShowTimer] = useState(false);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
+    const navigate = useNavigate();
+
+    useSSE<{ action: TSSEActions; payload: ICostume }>({
+        onMessage: (data) => {
+            if (data.action === 'back') {
+                navigate('/costume', { state: data.payload });
+            }
+        },
+    });
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -91,10 +105,15 @@ export const Camera = () => {
     };
 
     const handleTimerEnd = () => {
-        setShowTimer(false);
-        setIsLoading(true);
-        videoRef.current?.pause();
-        toPhoto();
+        fetch(API_URL + '/api/events', {
+            method: 'POST',
+            body: JSON.stringify({ action: 'photoLoading' }),
+        }).then(() => {
+            setShowTimer(false);
+            setIsLoading(true);
+            videoRef.current?.pause();
+            toPhoto();
+        });
     };
 
     return (

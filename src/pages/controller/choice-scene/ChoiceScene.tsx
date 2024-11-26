@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { Swiper as SwiperType } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
+import { sendEvent } from '@/entities/event';
+import { sendChoiceScene } from '@/entities/statistic';
 import InstructionsIcon from '@/shared/assets/icons/instructions.svg?react';
 import { API_URL } from '@/shared/const';
 import { useSSE } from '@/shared/hooks';
@@ -12,7 +14,6 @@ import { TSSEActions } from '@/shared/types';
 import { Button, Loader, Modal } from '@/shared/ui';
 
 import styles from './ChoiceScene.module.scss';
-import { sendChoiceScene } from '@/entities/statistic';
 
 export const ChoiceScene = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -24,9 +25,10 @@ export const ChoiceScene = () => {
     const { costume, statisticId } = useControllerStore((state) => state);
     const scenes = costume?.scenes || [];
 
-    useSSE<{ action: TSSEActions; payload: string }>({
+    useSSE<{ action: TSSEActions }>({
         onMessage: (data) => {
             if (data.action === 'photoLoading') {
+                setIsOpenSecond(false);
                 setIsLoading(true);
             }
         },
@@ -51,20 +53,11 @@ export const ChoiceScene = () => {
     const handleCreatePhoto = async () => {
         try {
             statisticId && (await sendChoiceScene(statisticId, scenes[currentIndex].id));
+            await sendEvent({ action: 'selectScene', payload: costume });
             setIsOpenFirst(false);
             setIsOpenSecond(true);
-
-            setTimeout(() => {
-                setIsOpenSecond(false);
-                setIsLoading(true);
-
-                setTimeout(() => {
-                    navigate('/controller/photo');
-                }, 3000);
-            }, 3000);
         } catch (error) {
             console.error(error);
-        } finally {
         }
     };
 
@@ -152,7 +145,14 @@ export const ChoiceScene = () => {
                         <InstructionsIcon />
                     </div>
                     <div className={styles.buttons}>
-                        <Button theme={'lightgreen'} fullWidth onClick={() => setIsOpenSecond(false)}>
+                        <Button
+                            theme={'lightgreen'}
+                            fullWidth
+                            onClick={() => {
+                                setIsOpenSecond(false);
+                                sendEvent({ action: 'back', payload: costume });
+                            }}
+                        >
                             Назад
                         </Button>
                     </div>

@@ -6,12 +6,13 @@ import { Swiper as SwiperType } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 import { fetchCostumes } from '@/entities/costume';
+import { sendEvent } from '@/entities/event';
+import { sendChoiceCostume } from '@/entities/statistic';
 import { API_URL } from '@/shared/const';
 import { useControllerStore } from '@/shared/store';
 import { Button } from '@/shared/ui';
 
 import styles from './ChoiceCostume.module.scss';
-import { sendChoiceCostume } from '@/entities/statistic';
 
 export const ChoiceCostume = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -25,6 +26,14 @@ export const ChoiceCostume = () => {
         queryFn: () => fetchCostumes(gender!),
         enabled: !!gender,
     });
+
+    useEffect(() => {
+        if (costume) {
+            sendEvent({ action: 'selectCostume', payload: costume });
+        } else if (costumes && costumes.length) {
+            sendEvent({ action: 'selectCostume', payload: costumes[0] });
+        }
+    }, [costume, costumes]);
 
     useEffect(() => {
         if (!costume || !costumes) return;
@@ -43,6 +52,7 @@ export const ChoiceCostume = () => {
             setIsLoading(true);
             const statisticId = await sendChoiceCostume(selectedCostume.id);
             setStatisticId(statisticId);
+            await sendEvent({ action: 'selectCostume', payload: selectedCostume });
             navigate('/controller/choice-scene');
         } catch (error) {
             console.error(error);
@@ -76,7 +86,9 @@ export const ChoiceCostume = () => {
                 <Button
                     theme={'lightgreen'}
                     size={'sm'}
-                    onClick={() => navigate('/controller')}
+                    onClick={() => {
+                        sendEvent({ action: 'back' }).then(() => navigate('/controller'));
+                    }}
                     className={styles.button}
                 >
                     назад
@@ -89,7 +101,10 @@ export const ChoiceCostume = () => {
                     spaceBetween={24}
                     centeredSlides
                     loop={costumes.length >= 4}
-                    onSlideChange={(swiper) => setCurrentIndex(swiper.realIndex)}
+                    onSlideChange={(swiper) => {
+                        setCurrentIndex(swiper.realIndex);
+                        costumes && sendEvent({ action: 'selectCostume', payload: costumes[swiper.realIndex] });
+                    }}
                     onSwiper={(swiper) => (swiperRef.current = swiper)}
                 >
                     {costumes.map((costume, index) => {

@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,7 +8,6 @@ import { TGender } from '@/shared/types';
 import { Button, Modal } from '@/shared/ui';
 
 import styles from './ControllerScreensaver.module.scss';
-import { motion } from 'framer-motion';
 
 export const ControllerScreensaver = () => {
     const [isOpen, setIsOpen] = useState(false);

@@ -6,6 +6,7 @@ export interface ICostume {
     image: string;
     title: string;
     description: string;
+    videoName: string;
     scenes: IScene[];
 }
 
