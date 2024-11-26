@@ -6,12 +6,13 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 
 import InstructionsIcon from '@/shared/assets/icons/instructions.svg?react';
 import { API_URL } from '@/shared/const';
-import { useSSE } from '@/shared/hooks';
+// import { useSSE } from '@/shared/hooks';
 import { useControllerStore } from '@/shared/store';
-import { TSSEActions } from '@/shared/types';
+// import { TSSEActions } from '@/shared/types';
 import { Button, Loader, Modal } from '@/shared/ui';
 
 import styles from './ChoiceScene.module.scss';
+import { sendChoiceScene } from '@/entities/statistic';
 
 export const ChoiceScene = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -20,16 +21,16 @@ export const ChoiceScene = () => {
     const [isLoading, setIsLoading] = useState(false);
     const swiperRef = useRef<SwiperType | null>(null);
     const navigate = useNavigate();
-    const costume = useControllerStore((state) => state.costume);
+    const { costume, statisticId } = useControllerStore((state) => state);
     const scenes = costume?.scenes || [];
 
-    useSSE<{ action: TSSEActions; payload: string }>({
-        onMessage: (data) => {
-            if (data.action === 'photoLoading') {
-                setIsLoading(true);
-            }
-        },
-    });
+    // useSSE<{ action: TSSEActions; payload: string }>({
+    //     onMessage: (data) => {
+    //         if (data.action === 'photoLoading') {
+    //             setIsLoading(true);
+    //         }
+    //     },
+    // });
 
     const handleSelect = () => {
         setIsOpenFirst(true);
@@ -47,18 +48,24 @@ export const ChoiceScene = () => {
         }
     };
 
-    const handleCreatePhoto = () => {
-        setIsOpenFirst(false);
-        setIsOpenSecond(true);
-
-        setTimeout(() => {
-            setIsOpenSecond(false);
-            setIsLoading(true);
+    const handleCreatePhoto = async () => {
+        try {
+            statisticId && (await sendChoiceScene(statisticId, scenes[currentIndex].id));
+            setIsOpenFirst(false);
+            setIsOpenSecond(true);
 
             setTimeout(() => {
-                navigate('/controller/photo');
+                setIsOpenSecond(false);
+                setIsLoading(true);
+
+                setTimeout(() => {
+                    navigate('/controller/photo');
+                }, 3000);
             }, 3000);
-        }, 3000);
+        } catch (error) {
+            console.error(error);
+        } finally {
+        }
     };
 
     return (

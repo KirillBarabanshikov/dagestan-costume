@@ -1,1 +1,1 @@
-export { sendChoiceCostume } from './statisticApi';
+export { sendChoiceCostume, sendChoiceScene } from './statisticApi';

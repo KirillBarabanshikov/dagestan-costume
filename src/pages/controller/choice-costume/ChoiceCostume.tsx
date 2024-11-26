@@ -15,9 +15,10 @@ import { sendChoiceCostume } from '@/entities/statistic';
 
 export const ChoiceCostume = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [isLoading, setIsLoading] = useState(false);
     const swiperRef = useRef<SwiperType | null>(null);
     const navigate = useNavigate();
-    const { gender, costume, setCostume } = useControllerStore((state) => state);
+    const { gender, costume, setCostume, setStatisticId } = useControllerStore((state) => state);
 
     const { data: costumes } = useQuery({
         queryKey: ['costumes', gender],
@@ -33,16 +34,40 @@ export const ChoiceCostume = () => {
         swiperRef.current?.slideTo(index);
     }, [costume, costumes]);
 
-    const handleSelect = () => {
-        if (!costumes) return;
-        const selectedCostume = costumes[currentIndex];
-        if (!selectedCostume) return;
-        setCostume(selectedCostume);
-        sendChoiceCostume(selectedCostume.id);
-        navigate('/controller/choice-scene');
+    const handleSelect = async () => {
+        try {
+            if (!costumes) return;
+            const selectedCostume = costumes[currentIndex];
+            if (!selectedCostume) return;
+            setCostume(selectedCostume);
+            setIsLoading(true);
+            const statisticId = await sendChoiceCostume(selectedCostume.id);
+            setStatisticId(statisticId);
+            navigate('/controller/choice-scene');
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
-    if (!costumes || !costumes.length) return <></>;
+    if (!costumes || !costumes.length) {
+        return (
+            <div className={styles.choiceCostume}>
+                <div className={styles.titleWrap}>
+                    <div></div>
+                    <Button
+                        theme={'lightgreen'}
+                        size={'sm'}
+                        onClick={() => navigate('/controller')}
+                        className={styles.button}
+                    >
+                        назад
+                    </Button>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className={styles.choiceCostume}>
@@ -89,7 +114,9 @@ export const ChoiceCostume = () => {
                 <Button theme={'white'} onClick={() => swiperRef.current?.slidePrev()} className={styles.prev}>
                     предыдущий
                 </Button>
-                <Button onClick={handleSelect}>выбрать</Button>
+                <Button onClick={handleSelect} disabled={isLoading}>
+                    выбрать
+                </Button>
                 <Button theme={'white'} onClick={() => swiperRef.current?.slideNext()} className={styles.next}>
                     следующий
                 </Button>

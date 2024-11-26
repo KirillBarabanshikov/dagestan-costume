@@ -1,1 +1,1 @@
-export { sendChoiceCostume } from './api';
+export { sendChoiceCostume, sendChoiceScene } from './api';
