@@ -1,11 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { ICostume } from '@/entities/costume';
 import Person from '@/shared/assets/icons/person.svg?react';
 import { API_URL } from '@/shared/const';
 import { useSSE } from '@/shared/hooks';
-import { TSSEActions } from '@/shared/types';
+import { ICostume, TSSEActions } from '@/shared/types';
 import { Loader, Timer } from '@/shared/ui';
 
 import styles from './Camera.module.scss';

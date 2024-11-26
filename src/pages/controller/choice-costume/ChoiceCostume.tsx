@@ -5,9 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { Swiper as SwiperType } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
-import { fetchCostumes } from '@/entities/costume';
-import { sendEvent } from '@/entities/event';
-import { sendChoiceCostume } from '@/entities/statistic';
+import { fetchCostumes, sendChoiceCostume, sendEvent } from '@/shared/api';
 import { API_URL } from '@/shared/const';
 import { useControllerStore } from '@/shared/store';
 import { Button } from '@/shared/ui';

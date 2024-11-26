@@ -1,9 +1,7 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
-import { ICostume } from '@/entities/costume';
-
-import { TGender } from '../types';
+import { ICostume, TGender } from '../types';
 
 type State = {
     gender?: TGender;

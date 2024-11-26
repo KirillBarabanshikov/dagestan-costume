@@ -1,8 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 
-import { ICostume } from '@/entities/costume';
 import { useSSE } from '@/shared/hooks';
-import { TSSEActions } from '@/shared/types';
+import { ICostume, TSSEActions } from '@/shared/types';
 
 import styles from './MainScreensaver.module.scss';
 

@@ -4,8 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Swiper as SwiperType } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
-import { sendEvent } from '@/entities/event';
-import { sendChoiceScene } from '@/entities/statistic';
+import { sendChoiceScene, sendEvent } from '@/shared/api';
 import InstructionsIcon from '@/shared/assets/icons/instructions.svg?react';
 import { API_URL } from '@/shared/const';
 import { useSSE } from '@/shared/hooks';

@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { ICostume } from '@/entities/costume';
 import { API_URL } from '@/shared/const';
 import { useSSE } from '@/shared/hooks';
-import { TSSEActions } from '@/shared/types';
+import { ICostume, TSSEActions } from '@/shared/types';
 
 import styles from './Costume.module.scss';
 
