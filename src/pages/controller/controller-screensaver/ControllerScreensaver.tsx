@@ -7,6 +7,7 @@ import { TGender } from '@/shared/types';
 import { Button, Modal } from '@/shared/ui';
 
 import styles from './ControllerScreensaver.module.scss';
+import { motion } from 'framer-motion';
 
 export const ControllerScreensaver = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -26,7 +27,18 @@ export const ControllerScreensaver = () => {
         <>
             <div onClick={() => setIsOpen(true)} className={styles.screensaver}>
                 <div className={styles.hintWrap}>
-                    <FingerIcon />
+                    <motion.div
+                        animate={{ scale: [1, 0.8, 1] }}
+                        transition={{
+                            repeatType: 'loop',
+                            repeat: Infinity,
+                            duration: 3,
+                            ease: 'easeInOut',
+                        }}
+                    >
+                        <FingerIcon />
+                    </motion.div>
+
                     <span>Коснитесь экрана, чтобы начать</span>
                 </div>
             </div>
