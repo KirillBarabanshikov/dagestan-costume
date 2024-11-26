@@ -1,6 +1,5 @@
-import './styles/index.css';
-// @ts-ignore
 import 'swiper/css';
+import './styles/index.css';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
