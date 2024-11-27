@@ -27,6 +27,7 @@ export const ChoiceScene = () => {
             }
             if (data.action === 'photoCreated') {
                 setIsLoading(false);
+                navigate('/photo');
             }
         },
     });
