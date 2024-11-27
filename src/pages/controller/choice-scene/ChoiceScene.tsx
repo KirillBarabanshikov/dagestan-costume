@@ -140,7 +140,7 @@ export const ChoiceScene = () => {
                     </div>
                 </div>
             </Modal>
-            <Modal isOpen={modalState === 'second'} onClose={() => setModalState('none')} maxWidth={'1022px'}>
+            <Modal isOpen={modalState === 'second'} onClose={handleBackEvent} maxWidth={'1022px'}>
                 <div className={styles.modalBody}>
                     <h2>Инструкция</h2>
                     <div className={styles.descriptionWrap}>
