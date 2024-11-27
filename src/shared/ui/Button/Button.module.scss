@@ -33,11 +33,19 @@
     &.green {
         background-color: var(--color-green);
         color: var(--color-white);
+
+        &:active {
+            background-color: #3f7b11;
+        }
     }
 
     &.white {
         background-color: var(--color-white);
         color: var(--color-sub-black);
+
+        &:active {
+            background-color: var(--color-light-green);
+        }
     }
 
     &.lightgreen {
@@ -45,6 +53,10 @@
         color: var(--color-sub-black);
         outline: 1px solid var(--color-green);
         outline-offset: -1px;
+
+        &:active {
+            background-color: var(--color-green);
+        }
     }
 
     &.blur {
