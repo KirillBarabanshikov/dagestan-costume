@@ -17,7 +17,7 @@ export const ChoiceScene = () => {
     const [isLoading, setIsLoading] = useState(false);
     const swiperRef = useRef<SwiperType | null>(null);
     const navigate = useNavigate();
-    const { costume, scene, setScene, statisticId } = useControllerStore((state) => state);
+    const { costume, scene, setScene, statisticId, setFaceSwapId } = useControllerStore((state) => state);
 
     useSSE<{ action: TSSEActions; payload: any }>({
         onMessage: (data) => {
@@ -27,7 +27,8 @@ export const ChoiceScene = () => {
             }
             if (data.action === 'photoCreated') {
                 setIsLoading(false);
-                navigate('/controller/photo', { state: data.payload });
+                setFaceSwapId(data.payload);
+                navigate('/controller/photo');
             }
         },
     });

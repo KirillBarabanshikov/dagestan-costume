@@ -63,3 +63,20 @@ export async function fetchFaceSwapPhoto(id: number) {
         throw new Error(`response was not ok ${error}`);
     }
 }
+
+export async function fetchQr(id: number) {
+    try {
+        const response = await fetch(API_URL + `/api/qr`, {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json',
+            },
+            body: JSON.stringify({
+                faceSwapsId: [id],
+            }),
+        });
+        return await response.text();
+    } catch (error) {
+        throw new Error(`response was not ok ${error}`);
+    }
+}

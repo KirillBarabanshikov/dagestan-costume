@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { fetchFaceSwapPhoto, sendEvent } from '@/shared/api';
 import { API_URL } from '@/shared/const';
@@ -10,20 +10,19 @@ import styles from './Photo.module.scss';
 
 export const Photo = () => {
     const navigate = useNavigate();
-    const location = useLocation();
-    const { costume, setScene } = useControllerStore((state) => state);
-    const id = location.state as number;
+    const { costume, setScene, faceSwapId, setFaceSwapId } = useControllerStore((state) => state);
 
     const { data: photo } = useQuery({
-        queryKey: ['photo', id],
-        queryFn: () => fetchFaceSwapPhoto(id),
-        enabled: !!id,
+        queryKey: ['photo', faceSwapId],
+        queryFn: () => fetchFaceSwapPhoto(faceSwapId!),
+        enabled: !!faceSwapId,
     });
 
     const handleRetry = async () => {
         try {
             await sendEvent({ action: 'retry', payload: costume });
             setScene(undefined);
+            setFaceSwapId(undefined);
             navigate('/controller/choice-costume');
         } catch (error) {
             console.error(error);

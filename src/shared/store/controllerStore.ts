@@ -8,6 +8,7 @@ type State = {
     costume?: ICostume;
     scene?: IScene;
     statisticId?: number;
+    faceSwapId?: number;
 };
 
 type Actions = {
@@ -15,6 +16,7 @@ type Actions = {
     setCostume: (costume: ICostume) => void;
     setScene: (scene: IScene | undefined) => void;
     setStatisticId: (statisticId: number) => void;
+    setFaceSwapId: (faceSwapId: number | undefined) => void;
     reset: () => void;
 };
 
@@ -33,6 +35,7 @@ export const useControllerStore = create<State & Actions>()(
             setCostume: (costume) => set({ costume }),
             setScene: (scene) => set({ scene }),
             setStatisticId: (statisticId) => set({ statisticId }),
+            setFaceSwapId: (faceSwapId) => set({ faceSwapId }),
             reset: () => set(initialState),
         }),
         { name: 'ControllerStore' },
