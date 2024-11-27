@@ -19,7 +19,7 @@ export const ChoiceScene = () => {
     const navigate = useNavigate();
     const { costume, scene, setScene, statisticId } = useControllerStore((state) => state);
 
-    useSSE<{ action: TSSEActions }>({
+    useSSE<{ action: TSSEActions; payload: any }>({
         onMessage: (data) => {
             if (data.action === 'photoLoading') {
                 setModalState('none');
@@ -27,7 +27,7 @@ export const ChoiceScene = () => {
             }
             if (data.action === 'photoCreated') {
                 setIsLoading(false);
-                navigate('/controller/photo');
+                navigate('/controller/photo', { state: data.payload });
             }
         },
     });

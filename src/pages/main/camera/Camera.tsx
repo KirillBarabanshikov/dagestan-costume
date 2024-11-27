@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+import { sendEvent, sendUserFace } from '@/shared/api';
 import Person from '@/shared/assets/icons/person.svg?react';
 import { useSSE } from '@/shared/hooks';
 import { ICostume, IScene, TSSEActions } from '@/shared/types';
 import { Loader, Timer } from '@/shared/ui';
 
 import styles from './Camera.module.scss';
-import { sendEvent, sendUserFace } from '@/shared/api';
 
 export const Camera = () => {
     const [isLoading, setIsLoading] = useState(false);
@@ -78,6 +78,7 @@ export const Camera = () => {
                 video: {
                     width: { ideal: videoWidth },
                     height: { ideal: videoHeight },
+                    deviceId: 'e4d1cfef655ffd2b9c090465375978aa41e08b3bec973906cac672fa6ad2fd0e',
                 },
                 audio: false,
             })

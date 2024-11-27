@@ -54,3 +54,12 @@ export async function sendUserFace(body: { userFaceImage: File; sceneId: number 
         throw new Error(`response was not ok ${error}`);
     }
 }
+
+export async function fetchFaceSwapPhoto(id: number) {
+    try {
+        const response = await fetch(API_URL + `/api/face_swap_photos/${id}`);
+        return (await response.json()) as Promise<{ id: number; image: string }>;
+    } catch (error) {
+        throw new Error(`response was not ok ${error}`);
+    }
+}
