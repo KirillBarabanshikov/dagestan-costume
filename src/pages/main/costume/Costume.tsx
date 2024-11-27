@@ -13,7 +13,7 @@ export const Costume = () => {
     const navigate = useNavigate();
     const [selectedCostume, setSelectedCostume] = useState(costume);
 
-    useSSE<{ action: TSSEActions; payload: ICostume }>({
+    useSSE<{ action: TSSEActions; payload: any }>({
         onMessage: (data) => {
             if (data.action === 'back') {
                 navigate('/');
@@ -22,7 +22,7 @@ export const Costume = () => {
                 setSelectedCostume(data.payload);
             }
             if (data.action === 'selectScene') {
-                navigate('/camera');
+                navigate('/camera', { state: data.payload });
             }
         },
     });

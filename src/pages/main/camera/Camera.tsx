@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import Person from '@/shared/assets/icons/person.svg?react';
-import { API_URL } from '@/shared/const';
 import { useSSE } from '@/shared/hooks';
-import { ICostume, TSSEActions } from '@/shared/types';
+import { ICostume, IScene, TSSEActions } from '@/shared/types';
 import { Loader, Timer } from '@/shared/ui';
 
 import styles from './Camera.module.scss';
+import { sendEvent, sendUserFace } from '@/shared/api';
 
 export const Camera = () => {
     const [isLoading, setIsLoading] = useState(false);
@@ -15,6 +15,9 @@ export const Camera = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
     const navigate = useNavigate();
+    const location = useLocation();
+
+    const scene = location.state as IScene;
 
     useSSE<{ action: TSSEActions; payload: ICostume }>({
         onMessage: (data) => {
@@ -89,30 +92,38 @@ export const Camera = () => {
         };
     }, []);
 
-    const toPhoto = () => {
+    const createPhoto = (): Promise<File | undefined> => {
         const canvas = canvasRef.current;
-        if (!canvas) return;
+        if (!canvas) return Promise.resolve(undefined);
 
-        canvas.toBlob((blob) => {
-            if (blob) {
-                const file = new File([blob], 'photo.png', { type: 'image/png' });
-                console.log(file);
-            } else {
-                console.error('Failed to create blob from canvas.');
-            }
-        }, 'image/png');
+        return new Promise((resolve) => {
+            canvas.toBlob((blob) => {
+                if (blob) {
+                    const photo = new File([blob], 'photo.png', { type: 'image/png' });
+                    resolve(photo);
+                } else {
+                    console.error('Failed to create blob from canvas.');
+                    resolve(undefined);
+                }
+            }, 'image/png');
+        });
     };
 
-    const handleTimerEnd = () => {
-        fetch(API_URL + '/api/events', {
-            method: 'POST',
-            body: JSON.stringify({ action: 'photoLoading' }),
-        }).then(() => {
+    const handleTimerEnd = async () => {
+        try {
             setShowTimer(false);
             setIsLoading(true);
             videoRef.current?.pause();
-            toPhoto();
-        });
+            await sendEvent({ action: 'photoLoading' });
+            const photo = await createPhoto();
+            if (photo) {
+                const { faceSwapPhotoId } = await sendUserFace({ userFaceImage: photo, sceneId: scene.id });
+                await sendEvent({ action: 'photoCreated', payload: faceSwapPhotoId });
+                navigate('/result', { state: faceSwapPhotoId });
+            }
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     return (

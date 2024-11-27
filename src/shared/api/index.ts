@@ -1,1 +1,1 @@
-export { fetchCostumes,sendChoiceCostume, sendChoiceScene, sendEvent } from './queries';
+export { fetchCostumes, sendChoiceCostume, sendChoiceScene, sendEvent, sendUserFace } from './queries';

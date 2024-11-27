@@ -15,7 +15,14 @@ export const Timer: FC<ITimerProps> = ({ time, onEnd, className }) => {
     const [nextTime, setNextTime] = useState(time - 1);
 
     useEffect(() => {
-        if (currentTime <= 0) return onEnd();
+        const handleEnd = async () => {
+            await onEnd();
+        };
+
+        if (currentTime <= 0) {
+            handleEnd();
+            return;
+        }
 
         const timerId = setInterval(() => {
             setNextTime((prevTime) => prevTime - 1);

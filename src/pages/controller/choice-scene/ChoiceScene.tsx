@@ -27,7 +27,7 @@ export const ChoiceScene = () => {
             }
             if (data.action === 'photoCreated') {
                 setIsLoading(false);
-                navigate('/photo');
+                navigate('/controller/photo');
             }
         },
     });
@@ -65,7 +65,7 @@ export const ChoiceScene = () => {
             if (statisticId) {
                 await sendChoiceScene(statisticId, currentScene.id);
             }
-            await sendEvent({ action: 'selectScene', payload: costume });
+            await sendEvent({ action: 'selectScene', payload: currentScene });
         } catch (error) {
             console.error(error);
         }

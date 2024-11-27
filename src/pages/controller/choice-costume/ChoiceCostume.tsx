@@ -52,6 +52,7 @@ export const ChoiceCostume = () => {
             const statisticId = await sendChoiceCostume(currentCostume.id);
             setStatisticId(statisticId);
             await sendEvent({ action: 'selectCostume', payload: currentCostume });
+            setCostume(currentCostume);
             navigate('/controller/choice-scene');
         } catch (error) {
             console.error(error);

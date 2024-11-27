@@ -38,3 +38,19 @@ export async function sendChoiceScene(statisticId: number, sceneId: number) {
         throw new Error(`response was not ok ${error}`);
     }
 }
+
+export async function sendUserFace(body: { userFaceImage: File; sceneId: number }) {
+    const formData = new FormData();
+    formData.append('userFaceImage', body.userFaceImage);
+    formData.append('sceneId', body.sceneId.toString());
+
+    try {
+        const response = await fetch(API_URL + '/api/user_faces', {
+            method: 'POST',
+            body: formData,
+        });
+        return (await response.json()) as Promise<{ faceSwapPhotoId: number }>;
+    } catch (error) {
+        throw new Error(`response was not ok ${error}`);
+    }
+}
