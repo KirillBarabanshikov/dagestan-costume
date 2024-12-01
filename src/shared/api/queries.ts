@@ -1,82 +1,68 @@
-import { API_URL } from '../const';
 import { ICostume, TGender, TSSEActions } from '../types';
+import { instance } from './instance';
 
 export async function fetchCostumes(gender: TGender) {
     try {
-        const response = await fetch(API_URL + `/api/costumes?gender=${gender}`);
-        return (await response.json()) as Promise<ICostume[]>;
+        const response = await instance.get<ICostume[]>(`/costumes?gender=${gender}`);
+        return response.data;
     } catch (error) {
-        throw new Error(`response was not ok ${error}`);
+        throw new Error(`Failed to fetch costumes: ${error}`);
     }
 }
 
 export async function sendEvent(body: { action: TSSEActions; payload?: any }) {
     try {
-        await fetch(API_URL + `/api/events`, {
-            method: 'POST',
-            body: JSON.stringify(body),
-        });
+        await instance.post('/events', body);
     } catch (error) {
-        throw new Error(`response was not ok ${error}`);
+        throw new Error(`Failed to send event: ${error}`);
     }
 }
 
 export async function sendChoiceCostume(costumeId: number) {
     try {
-        const response = await fetch(API_URL + `/api/statistic/${costumeId}`);
-        return (await response.json()) as Promise<number>;
+        const response = await instance.get<number>(`/statistic/${costumeId}`);
+        return response.data;
     } catch (error) {
-        throw new Error(`response was not ok ${error}`);
+        throw new Error(`Failed to send costume: ${error}`);
     }
 }
 
 export async function sendChoiceScene(statisticId: number, sceneId: number) {
     try {
-        const response = await fetch(API_URL + `/api/statistic/${statisticId}/scene/${sceneId}`);
-        return (await response.json()) as Promise<number>;
+        const response = await instance.get<number>(`/statistic/${statisticId}/scene/${sceneId}`);
+        return response.data;
     } catch (error) {
-        throw new Error(`response was not ok ${error}`);
+        throw new Error(`Failed to send scene: ${error}`);
     }
 }
 
 export async function sendUserFace(body: { userFaceImage: File; sceneId: number }) {
-    const formData = new FormData();
-    formData.append('userFaceImage', body.userFaceImage);
-    formData.append('sceneId', body.sceneId.toString());
-
     try {
-        const response = await fetch(API_URL + '/api/user_faces', {
-            method: 'POST',
-            body: formData,
-        });
-        return (await response.json()) as Promise<{ faceSwapPhotoId: number }>;
+        const formData = new FormData();
+        formData.append('userFaceImage', body.userFaceImage);
+        formData.append('sceneId', body.sceneId.toString());
+
+        const response = await instance.post<{ faceSwapPhotoId: number }>('/user_faces', formData);
+        return response.data;
     } catch (error) {
-        throw new Error(`response was not ok ${error}`);
+        throw new Error(`Failed to send user face: ${error}`);
     }
 }
 
 export async function fetchFaceSwapPhoto(id: number) {
     try {
-        const response = await fetch(API_URL + `/api/face_swap_photos/${id}`);
-        return (await response.json()) as Promise<{ id: number; image: string }>;
+        const response = await instance.get<{ id: number; image: string }>(`/face_swap_photos/${id}`);
+        return response.data;
     } catch (error) {
-        throw new Error(`response was not ok ${error}`);
+        throw new Error(`Failed to fetch swap photo: ${error}`);
     }
 }
 
 export async function fetchQr(id: number) {
     try {
-        const response = await fetch(API_URL + `/api/qr`, {
-            method: 'POST',
-            headers: {
-                'content-type': 'application/json',
-            },
-            body: JSON.stringify({
-                faceSwapsId: [id],
-            }),
-        });
-        return await response.text();
+        const response = await instance.post<string>('/qr', { faceSwapsId: [id] });
+        return response.data;
     } catch (error) {
-        throw new Error(`response was not ok ${error}`);
+        throw new Error(`Failed to fetch qr: ${error}`);
     }
 }

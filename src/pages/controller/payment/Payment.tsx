@@ -1,25 +1,28 @@
-import { useEffect, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { AlertModal, Button } from '@/shared/ui';
+import { PAYMENT_PASSWORD } from '@/shared/consts';
+import { AlertModal, Button, Keyboard, Modal, SecretButton } from '@/shared/ui';
 
 import styles from './Payment.module.scss';
 
 export const Payment = () => {
-    const [isOpen, setIsOpen] = useState(false);
-
-    useEffect(() => {
-        const timeout = setTimeout(() => {
-            setIsOpen(true);
-        }, 2000);
-
-        return () => clearTimeout(timeout);
-    }, []);
-
+    const [showAlert, setShowAlert] = useState(false);
+    const [showKeyboard, setShowKeyboard] = useState(false);
+    const inputRef = useRef<HTMLInputElement | null>(null);
     const navigate = useNavigate();
+
+    const onSubmit = () => {
+        if (!inputRef.current) return;
+        if (inputRef.current.value === PAYMENT_PASSWORD) {
+            setShowAlert(true);
+            setShowKeyboard(false);
+        }
+    };
 
     return (
         <>
+            <SecretButton onSecretAction={() => setShowKeyboard(true)} />
             <div className={styles.payment}>
                 <div className={styles.wrap}>
                     <h2>Произведите оплату</h2>
@@ -42,11 +45,19 @@ export const Payment = () => {
                 </div>
             </div>
             <AlertModal
-                isOpen={isOpen}
-                onClose={() => setIsOpen(false)}
+                isOpen={showAlert}
+                onClose={() => setShowAlert(false)}
                 onSuccess={() => navigate('/controller/qr')}
                 onError={() => navigate('/controller')}
             />
+            <Modal isOpen={showKeyboard} onClose={() => setShowKeyboard(false)}>
+                <div className={styles.modalBody}>
+                    <h3>Введите пароль</h3>
+                    <input type={'password'} ref={inputRef} placeholder={'Пароль'} />
+                    <Keyboard inputRef={inputRef} onEnter={onSubmit} />
+                    <Button onClick={onSubmit}>Отправить</Button>
+                </div>
+            </Modal>
         </>
     );
 };

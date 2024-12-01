@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { API_URL } from '@/shared/const';
+import { API_URL } from '@/shared/consts';
 import { useSSE } from '@/shared/hooks';
 import { ICostume, TSSEActions } from '@/shared/types';
 

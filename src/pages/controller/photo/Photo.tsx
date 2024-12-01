@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 
 import { fetchFaceSwapPhoto, sendEvent } from '@/shared/api';
-import { API_URL } from '@/shared/const';
+import { API_URL } from '@/shared/consts';
 import { useControllerStore } from '@/shared/store';
 import { Button, PhotoPreview } from '@/shared/ui';
 

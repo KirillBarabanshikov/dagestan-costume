@@ -10,6 +10,8 @@ import {
     Qr,
 } from '@/pages/controller';
 import { Camera, Costume, MainPage, MainScreensaver, Result } from '@/pages/main';
+import { INACTIVITY_TIMEOUT } from '@/shared/consts';
+import { InactivityHandler } from '@/shared/handlers';
 
 export const router = createBrowserRouter([
     {
@@ -44,23 +46,43 @@ export const router = createBrowserRouter([
             },
             {
                 path: 'choice-costume',
-                element: <ChoiceCostume />,
+                element: (
+                    <InactivityHandler timeout={INACTIVITY_TIMEOUT}>
+                        <ChoiceCostume />
+                    </InactivityHandler>
+                ),
             },
             {
                 path: 'choice-scene',
-                element: <ChoiceScene />,
+                element: (
+                    <InactivityHandler timeout={INACTIVITY_TIMEOUT}>
+                        <ChoiceScene />
+                    </InactivityHandler>
+                ),
             },
             {
                 path: 'photo',
-                element: <Photo />,
+                element: (
+                    <InactivityHandler timeout={INACTIVITY_TIMEOUT}>
+                        <Photo />
+                    </InactivityHandler>
+                ),
             },
             {
                 path: 'payment',
-                element: <Payment />,
+                element: (
+                    <InactivityHandler timeout={INACTIVITY_TIMEOUT}>
+                        <Payment />
+                    </InactivityHandler>
+                ),
             },
             {
                 path: 'qr',
-                element: <Qr />,
+                element: (
+                    <InactivityHandler timeout={INACTIVITY_TIMEOUT}>
+                        <Qr />
+                    </InactivityHandler>
+                ),
             },
         ],
     },

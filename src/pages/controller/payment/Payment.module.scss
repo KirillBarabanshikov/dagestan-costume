@@ -56,3 +56,25 @@
         }
     }
 }
+
+.modalBody {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    width: 100%;
+
+    input {
+        width: 100%;
+        height: 88px;
+        border-bottom: 2px solid #dcdcdc;
+        outline: unset;
+
+        font-weight: 400;
+        font-size: 28px;
+
+        &::placeholder {
+            color: #a3a3a3;
+        }
+    }
+}

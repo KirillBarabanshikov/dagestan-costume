@@ -1,7 +1,7 @@
-import { Event,EventSourcePolyfill } from 'event-source-polyfill';
+import { Event, EventSourcePolyfill } from 'event-source-polyfill';
 import { useEffect, useState } from 'react';
 
-import { JWT_TOKEN,SSE_URL } from '../const';
+import { JWT_TOKEN, SSE_URL } from '../consts';
 
 type SSEOptions<T> = {
     onMessage?: (data: T) => void;

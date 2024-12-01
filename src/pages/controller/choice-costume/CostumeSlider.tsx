@@ -3,7 +3,7 @@ import { FC, MutableRefObject } from 'react';
 import { Swiper as SwiperType } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
-import { API_URL } from '@/shared/const';
+import { API_URL } from '@/shared/consts';
 import { ICostume } from '@/shared/types';
 
 import styles from './ChoiceCostume.module.scss';
