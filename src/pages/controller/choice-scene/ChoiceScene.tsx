@@ -7,13 +7,13 @@ import InstructionsIcon from '@/shared/assets/icons/instructions.svg?react';
 import { useSSE } from '@/shared/hooks';
 import { useControllerStore } from '@/shared/store';
 import { TSSEActions } from '@/shared/types';
-import { Button, Loader, Modal } from '@/shared/ui';
+import { AlertModal, Button, Loader, Modal } from '@/shared/ui';
 
 import styles from './ChoiceScene.module.scss';
 import { SceneSlider } from './SceneSlider.tsx';
 
 export const ChoiceScene = () => {
-    const [modalState, setModalState] = useState<'none' | 'first' | 'second'>('none');
+    const [modalState, setModalState] = useState<'none' | 'first' | 'second' | 'error'>('none');
     const [isLoading, setIsLoading] = useState(false);
     const swiperRef = useRef<SwiperType | null>(null);
     const navigate = useNavigate();
@@ -29,6 +29,10 @@ export const ChoiceScene = () => {
                 setIsLoading(false);
                 setFaceSwapId(data.payload);
                 navigate('/controller/photo');
+            }
+            if (data.action === 'photoError') {
+                setIsLoading(false);
+                setModalState('error');
             }
         },
     });
@@ -162,6 +166,18 @@ export const ChoiceScene = () => {
                 title={'Пожалуйста,подождите...'}
                 subtitle={'Ваша фотография обрабатывается'}
                 variant={'controller'}
+            />
+            <AlertModal
+                isOpen={modalState === 'error'}
+                isError
+                onClose={() => {
+                    navigate('/controller/choice-costume');
+                    sendEvent({ action: 'back' });
+                }}
+                onError={() => {
+                    navigate('/controller');
+                    sendEvent({ action: 'exit' });
+                }}
             />
         </>
     );

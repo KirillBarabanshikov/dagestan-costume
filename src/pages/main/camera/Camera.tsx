@@ -5,13 +5,14 @@ import { sendEvent, sendUserFace } from '@/shared/api';
 import Person from '@/shared/assets/icons/person.svg?react';
 import { useSSE } from '@/shared/hooks';
 import { ICostume, IScene, TSSEActions } from '@/shared/types';
-import { Loader, Timer } from '@/shared/ui';
+import { AlertModal, Loader, Timer } from '@/shared/ui';
 
 import styles from './Camera.module.scss';
 
 export const Camera = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [showTimer, setShowTimer] = useState(false);
+    const [showAlert, setShowAlert] = useState(false);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
     const navigate = useNavigate();
@@ -23,6 +24,9 @@ export const Camera = () => {
         onMessage: (data) => {
             if (data.action === 'back') {
                 navigate('/costume', { state: data.payload });
+            }
+            if (data.action === 'exit') {
+                navigate('/');
             }
         },
     });
@@ -124,6 +128,9 @@ export const Camera = () => {
             }
         } catch (error) {
             console.error(error);
+            await sendEvent({ action: 'photoError' });
+            setIsLoading(false);
+            setShowAlert(true);
         }
     };
 
@@ -135,6 +142,7 @@ export const Camera = () => {
             <Person className={styles.person} />
             {showTimer && <Timer time={5} onEnd={handleTimerEnd} className={styles.timer} />}
             <Loader isLoading={isLoading} title={'Пожалуйста,подождите...'} variant={'main'} />
+            <AlertModal isOpen={showAlert} onClose={() => {}} isError onError={() => {}} />
         </div>
     );
 };

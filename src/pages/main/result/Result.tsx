@@ -19,6 +19,9 @@ export const Result = () => {
             if (data.action === 'retry') {
                 navigate('/costume', { state: data.payload });
             }
+            if (data.action === 'exit') {
+                navigate('/');
+            }
         },
     });
 

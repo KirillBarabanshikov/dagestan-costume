@@ -9,7 +9,7 @@ import styles from './AlertModal.module.scss';
 interface IAlertModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSuccess: () => void;
+    onSuccess?: () => void;
     onError: () => void;
     isError?: boolean;
 }

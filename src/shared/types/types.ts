@@ -5,6 +5,7 @@ export type TSSEActions =
     | 'selectScene'
     | 'photoLoading'
     | 'photoCreated'
+    | 'photoError'
     | 'retry'
     | 'exit'
     | 'back'
