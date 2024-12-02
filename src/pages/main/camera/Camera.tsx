@@ -1,3 +1,4 @@
+import { Howl } from 'howler';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -13,12 +14,18 @@ export const Camera = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [showTimer, setShowTimer] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
+    const [showFlash, setShowFlash] = useState(false);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
     const navigate = useNavigate();
     const location = useLocation();
 
     const scene = location.state as IScene;
+
+    const sound = new Howl({
+        src: ['/zvuk-zatvora.mp3'],
+        volume: 0.5,
+    });
 
     useSSE<{ action: TSSEActions; payload: ICostume }>({
         onMessage: (data) => {
@@ -104,6 +111,9 @@ export const Camera = () => {
         return new Promise((resolve) => {
             canvas.toBlob((blob) => {
                 if (blob) {
+                    sound.play();
+                    setShowFlash(true);
+                    setTimeout(() => setShowFlash(false), 100);
                     const photo = new File([blob], 'photo.png', { type: 'image/png' });
                     resolve(photo);
                 } else {
@@ -116,12 +126,12 @@ export const Camera = () => {
 
     const handleTimerEnd = async () => {
         try {
+            const photo = await createPhoto();
             setShowTimer(false);
             setIsLoading(true);
             videoRef.current?.pause();
-            await sendEvent({ action: 'photoLoading' });
-            const photo = await createPhoto();
             if (photo) {
+                await sendEvent({ action: 'photoLoading' });
                 const { faceSwapPhotoId } = await sendUserFace({ userFaceImage: photo, sceneId: scene.id });
                 await sendEvent({ action: 'photoCreated', payload: faceSwapPhotoId });
                 navigate('/result', { state: faceSwapPhotoId });
@@ -139,6 +149,7 @@ export const Camera = () => {
             <h2 className={styles.title}>Встаньте в область</h2>
             <canvas ref={canvasRef} width={2160} height={3840} />
             <video ref={videoRef} style={{ display: 'none' }} />
+            {showFlash && <div className={styles.flash} />}
             <Person className={styles.person} />
             {showTimer && <Timer time={5} onEnd={handleTimerEnd} className={styles.timer} />}
             <Loader isLoading={isLoading} title={'Пожалуйста,подождите...'} variant={'main'} />

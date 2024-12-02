@@ -16,6 +16,7 @@
     "clsx": "^2.1.1",
     "event-source-polyfill": "^1.0.31",
     "framer-motion": "^11.11.17",
+    "howler": "^2.2.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.28.0",
@@ -25,6 +26,7 @@
   "devDependencies": {
     "@eslint/js": "^9.13.0",
     "@types/event-source-polyfill": "^1.0.5",
+    "@types/howler": "^2.2.12",
     "@types/node": "^22.10.1",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",

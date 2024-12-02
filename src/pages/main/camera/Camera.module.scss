@@ -22,4 +22,10 @@
         bottom: 173px;
         left: calc(50% - 175px);
     }
+
+    .flash {
+        position: absolute;
+        inset: 0;
+        background-color: var(--color-white);
+    }
 }
