@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import { sendEvent, sendUserFace } from '@/shared/api';
 import Person from '@/shared/assets/icons/person.svg?react';
+import { DEVICE_ID } from '@/shared/consts';
 import { useSSE } from '@/shared/hooks';
 import { ICostume, IScene, TSSEActions } from '@/shared/types';
 import { AlertModal, Loader, Timer } from '@/shared/ui';
@@ -89,7 +90,7 @@ export const Camera = () => {
                 video: {
                     width: { ideal: videoWidth },
                     height: { ideal: videoHeight },
-                    deviceId: 'e4d1cfef655ffd2b9c090465375978aa41e08b3bec973906cac672fa6ad2fd0e',
+                    deviceId: DEVICE_ID,
                 },
                 audio: false,
             })
@@ -113,9 +114,12 @@ export const Camera = () => {
                 if (blob) {
                     sound.play();
                     setShowFlash(true);
-                    setTimeout(() => setShowFlash(false), 100);
-                    const photo = new File([blob], 'photo.png', { type: 'image/png' });
-                    resolve(photo);
+                    const timerId = setTimeout(() => {
+                        setShowFlash(false);
+                        const photo = new File([blob], 'photo.png', { type: 'image/png' });
+                        clearTimeout(timerId);
+                        resolve(photo);
+                    }, 200);
                 } else {
                     console.error('Failed to create blob from canvas.');
                     resolve(undefined);
@@ -128,10 +132,10 @@ export const Camera = () => {
         try {
             const photo = await createPhoto();
             setShowTimer(false);
-            setIsLoading(true);
             videoRef.current?.pause();
             if (photo) {
                 await sendEvent({ action: 'photoLoading' });
+                setIsLoading(true);
                 const { faceSwapPhotoId } = await sendUserFace({ userFaceImage: photo, sceneId: scene.id });
                 await sendEvent({ action: 'photoCreated', payload: faceSwapPhotoId });
                 navigate('/result', { state: faceSwapPhotoId });

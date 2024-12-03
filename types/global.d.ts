@@ -5,6 +5,7 @@ declare global {
         JWT_TOKEN: string;
         PAYMENT_PASSWORD: string;
         INACTIVITY_TIMEOUT: number;
+        DEVICE_ID: string;
     }
 }
 
