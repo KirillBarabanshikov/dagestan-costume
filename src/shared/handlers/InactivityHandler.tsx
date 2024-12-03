@@ -17,7 +17,7 @@ export const InactivityHandler: FC<IInactivityHandlerProps> = ({ timeout, childr
         }
         timerRef.current = setTimeout(() => {
             console.log('navigate');
-            sendEvent({ action: 'timeout' }).then(() => navigate('/'));
+            sendEvent({ action: 'timeout' }).then(() => navigate('/controller'));
         }, timeout);
     };
 
