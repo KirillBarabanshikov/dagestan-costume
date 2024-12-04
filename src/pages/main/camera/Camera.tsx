@@ -1,10 +1,9 @@
-import { Howl } from 'howler';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { sendEvent, sendUserFace } from '@/shared/api';
 import Person from '@/shared/assets/icons/person.svg?react';
-import { DEVICE_ID } from '@/shared/consts';
+import { cameraSound, DEVICE_ID } from '@/shared/consts';
 import { useSSE } from '@/shared/hooks';
 import { ICostume, IScene, TSSEActions } from '@/shared/types';
 import { AlertModal, Loader, Timer } from '@/shared/ui';
@@ -22,11 +21,6 @@ export const Camera = () => {
     const location = useLocation();
 
     const scene = location.state as IScene;
-
-    const sound = new Howl({
-        src: ['/zvuk-zatvora.mp3'],
-        volume: 0.5,
-    });
 
     useSSE<{ action: TSSEActions; payload: ICostume }>({
         onMessage: (data) => {
@@ -112,7 +106,7 @@ export const Camera = () => {
         return new Promise((resolve) => {
             canvas.toBlob((blob) => {
                 if (blob) {
-                    sound.play();
+                    cameraSound.play();
                     setShowFlash(true);
                     const timerId = setTimeout(() => {
                         setShowFlash(false);

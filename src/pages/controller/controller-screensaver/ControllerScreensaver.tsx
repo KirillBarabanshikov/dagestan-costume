@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import FingerIcon from '@/shared/assets/icons/finger.svg?react';
+import { clickSound } from '@/shared/consts';
 import { useControllerStore } from '@/shared/store';
 import { TGender } from '@/shared/types';
 import { Button, Modal } from '@/shared/ui';
@@ -25,7 +26,13 @@ export const ControllerScreensaver = () => {
 
     return (
         <>
-            <div onClick={() => setIsOpen(true)} className={styles.screensaver}>
+            <div
+                onClick={() => {
+                    clickSound.play();
+                    setIsOpen(true);
+                }}
+                className={styles.screensaver}
+            >
                 <div className={styles.hintWrap}>
                     <motion.div
                         animate={{ scale: [1, 0.8, 1] }}
