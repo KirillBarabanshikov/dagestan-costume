@@ -2,6 +2,11 @@
     filter: grayscale(1);
     transform: rotate(3deg);
 
+    &.isPayed {
+        filter: unset;
+        transform: unset;
+    }
+
     &.main {
         width: 1861px;
         height: 3310px;

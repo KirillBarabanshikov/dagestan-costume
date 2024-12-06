@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { PAYMENT_PASSWORD } from '@/shared/consts';
+import { PAYMENT_PASSWORD, PHOTO_COST } from '@/shared/consts';
 import { AlertModal, Button, Keyboard, Modal, SecretButton } from '@/shared/ui';
 
 import styles from './Payment.module.scss';
@@ -32,7 +32,7 @@ export const Payment = () => {
                     </p>
                     <div className={styles.priceWrap}>
                         <div className={styles.priceLabel}>Сумма к оплате:</div>
-                        <div className={styles.price}>200₽</div>
+                        <div className={styles.price}>{PHOTO_COST}₽</div>
                     </div>
                     <Button
                         theme={'lightgreen'}

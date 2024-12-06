@@ -8,8 +8,10 @@ import { TSSEActions } from '@/shared/types';
 import { Button, PhotoPreview } from '@/shared/ui';
 
 import styles from './Result.module.scss';
+import { useState } from 'react';
 
 export const Result = () => {
+    const [isPayed, setIsPayed] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
     const id = location.state as number;
@@ -21,6 +23,9 @@ export const Result = () => {
             }
             if (data.action === 'exit') {
                 navigate('/');
+            }
+            if (data.action === 'payed') {
+                setIsPayed(true);
             }
         },
     });
@@ -35,15 +40,17 @@ export const Result = () => {
 
     return (
         <div className={styles.result}>
-            <PhotoPreview src={API_URL + photo.image} variant={'main'} />
-            <div className={styles.buttons}>
-                <Button size={'lg'} theme={'blur'}>
-                    Сохранить и напечатать
-                </Button>
-                <Button size={'lg'} theme={'blur'}>
-                    повторить
-                </Button>
-            </div>
+            <PhotoPreview src={API_URL + photo.image} variant={'main'} isPayed={isPayed} />
+            {!isPayed && (
+                <div className={styles.buttons}>
+                    <Button size={'lg'} theme={'blur'}>
+                        Сохранить и напечатать
+                    </Button>
+                    <Button size={'lg'} theme={'blur'}>
+                        повторить
+                    </Button>
+                </div>
+            )}
         </div>
     );
 };

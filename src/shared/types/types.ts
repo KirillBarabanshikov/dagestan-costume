@@ -9,7 +9,8 @@ export type TSSEActions =
     | 'retry'
     | 'exit'
     | 'back'
-    | 'timeout';
+    | 'timeout'
+    | 'payed';
 
 export interface ICostume {
     id: number;

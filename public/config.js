@@ -5,3 +5,5 @@ window.JWT_TOKEN =
 window.PAYMENT_PASSWORD = '160371';
 window.INACTIVITY_TIMEOUT = 5 * 60 * 1000; // 5 минут
 window.DEVICE_ID = 'e4d1cfef655ffd2b9c090465375978aa41e08b3bec973906cac672fa6ad2fd0e';
+window.PAYMENT_URL = 'http://localhost:2707';
+window.PHOTO_COST = 200;

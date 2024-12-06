@@ -6,6 +6,8 @@ declare global {
         PAYMENT_PASSWORD: string;
         INACTIVITY_TIMEOUT: number;
         DEVICE_ID: string;
+        PAYMENT_URL: string;
+        PHOTO_COST: number;
     }
 }
 
