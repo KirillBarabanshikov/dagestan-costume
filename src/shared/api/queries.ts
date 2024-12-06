@@ -36,6 +36,14 @@ export async function sendChoiceScene(statisticId: number, sceneId: number) {
     }
 }
 
+export async function sendStatisticPayed(statisticId: number) {
+    try {
+        await instance.get<number>(`/statistic/${statisticId}/payed`);
+    } catch (error) {
+        throw new Error(`Failed to send scene: ${error}`);
+    }
+}
+
 export async function sendUserFace(body: { userFaceImage: File; sceneId: number }) {
     try {
         const formData = new FormData();

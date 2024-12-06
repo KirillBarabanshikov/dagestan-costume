@@ -6,4 +6,5 @@ export {
     sendChoiceScene,
     sendEvent,
     sendUserFace,
+    sendStatisticPayed,
 } from './queries';
