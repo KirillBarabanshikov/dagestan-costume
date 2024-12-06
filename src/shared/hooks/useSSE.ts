@@ -15,6 +15,7 @@ export const useSSE = <T>({ onMessage, onError }: SSEOptions<T>) => {
         const eventSource = new EventSourcePolyfill(SSE_URL, {
             headers: {
                 Authorization: `Bearer ${JWT_TOKEN}`,
+                ContentSecurityPolicy: 'default-src https: http:',
             },
             heartbeatTimeout: 45000,
         });
