@@ -17,7 +17,6 @@ export const useSSE = <T>({ onMessage, onError }: SSEOptions<T>) => {
                 Authorization: `Bearer ${JWT_TOKEN}`,
             },
             heartbeatTimeout: 45000,
-            withCredentials: true,
         });
 
         setIsConnected(true);
